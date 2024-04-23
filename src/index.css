@@ -332,9 +332,7 @@ input:checked + .carousel__slide-container .carousel__controls label {
   display: block;
 }
 
-input#img-1:checked ~ .carousel__dots label#img-dot-1,
-input#img-2:checked ~ .carousel__dots label#img-dot-2,
-input#img-3:checked ~ .carousel__dots label#img-dot-3 {
+.carousel__dots .carousel__dot--active{
   opacity: 1;
 }
 
