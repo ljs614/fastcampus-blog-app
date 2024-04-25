@@ -185,6 +185,10 @@ footer a:hover {
   border: 1px solid #f2f2f2;
 }
 
+.post__text--pre-wrap {
+  white-space: pre-wrap;
+}
+
 /* profile */
 
 .profile__box {
