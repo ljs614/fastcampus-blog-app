@@ -216,11 +216,13 @@ footer a:hover {
 .profile__logout {
   color: gray;
   font-size: 14px;
+  text-decoration: underline;
 }
 
 .profile__logout:hover,
 .profile__logout:focus {
   color: black;
+  cursor: pointer;
 }
 
 /* carousel */
