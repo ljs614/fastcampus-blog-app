@@ -1,5 +1,13 @@
 import { AuthContext } from "context/AuthContext";
-import { collection, deleteDoc, doc, getDocs } from "firebase/firestore";
+import {
+  collection,
+  deleteDoc,
+  doc,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
 import { db } from "firebaseApp";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
@@ -7,6 +15,7 @@ import { toast } from "react-toastify";
 
 interface PostListProps {
   hasNavigation?: boolean;
+  defaultTab?: TabType;
 }
 
 type TabType = "all" | "my";
@@ -17,20 +26,36 @@ export interface PostProps {
   email: string;
   summary: string;
   content: string;
-  createAt: string;
+  createdAt: string;
   updatedAt?: string;
   uid: string;
 }
 
-export default function PostList({ hasNavigation = true }: PostListProps) {
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+export default function PostList({
+  hasNavigation = true,
+  defaultTab = "all",
+}: PostListProps) {
+  const [activeTab, setActiveTab] = useState<TabType>(defaultTab);
   const [posts, setPosts] = useState<PostProps[]>([]);
 
   const { user } = useContext(AuthContext);
 
   const getPosts = async () => {
-    const datas = await getDocs(collection(db, "posts"));
     setPosts([]);
+
+    let postsRef = collection(db, "posts");
+    let postsQuery;
+
+    if (activeTab === "my" && user) {
+      postsQuery = query(
+        postsRef,
+        where("uid", "==", user.uid),
+        orderBy("createdAt", "asc")
+      );
+    } else {
+      postsQuery = query(postsRef, orderBy("createdAt", "asc"));
+    }
+    const datas = await getDocs(postsQuery);
     datas?.forEach((doc) => {
       const dataObj = { ...doc.data(), id: doc.id };
       setPosts((prev) => [...prev, dataObj as PostProps]);
@@ -49,7 +74,7 @@ export default function PostList({ hasNavigation = true }: PostListProps) {
 
   useEffect(() => {
     getPosts();
-  }, []);
+  }, [activeTab]);
 
   return (
     <>
@@ -83,7 +108,7 @@ export default function PostList({ hasNavigation = true }: PostListProps) {
                 <div className="post__profile-box">
                   <div className="post__profile"></div>
                   <div className="post__author-name">{post?.email}</div>
-                  <div className="post__date">{post?.createAt}</div>
+                  <div className="post__date">{post?.createdAt}</div>
                 </div>
                 <div className="post__title">{post?.title}</div>
                 <div className="post__text">{post?.summary}</div>
