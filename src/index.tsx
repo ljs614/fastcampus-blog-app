@@ -4,14 +4,17 @@ import App from "App";
 
 import "index.css";
 import { AuthContextProvider } from "context/AuthContext";
+import { ThemeContextProvider } from "context/ThemeContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <AuthContextProvider>
-    <Router>
-      <App />
-    </Router>
-  </AuthContextProvider>
+  <ThemeContextProvider>
+    <AuthContextProvider>
+      <Router>
+        <App />
+      </Router>
+    </AuthContextProvider>
+  </ThemeContextProvider>
 );

@@ -1,13 +1,15 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Router from "components/Router";
-import { app, db } from "firebaseApp";
+import { app } from "firebaseApp";
 import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { ToastContainer } from "react-toastify";
 
 import "react-toastify/dist/ReactToastify.css";
 import Loader from "components/Loader";
+import { ThemeContext } from "context/ThemeContext";
 
 function App() {
+  const context = useContext(ThemeContext);
   const auth = getAuth(app);
 
   const [init, setInit] = useState<boolean>(false);
@@ -27,10 +29,10 @@ function App() {
   }, [auth]);
 
   return (
-    <>
+    <div className={context.theme}>
       <ToastContainer />
-      {init ? <Router isAuthenticated={isAuthenticated} /> : <Loader />};
-    </>
+      {init ? <Router isAuthenticated={isAuthenticated} /> : <Loader />}
+    </div>
   );
 }
 
